@@ -28,14 +28,44 @@ jobs:
       - run: npm run build --if-present
       
 
+  Docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-      - name: Build & push Docker image
-        uses: mr-smithers-excellent/docker-build-push@v5
+      - uses: actions/setup-node@v3
         with:
-          image: 0766537018/myapptest01
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          node-version: 18.x
+
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+      - name : Dependencies
+        run: npm ci
+
+      - name : Build
+        run: npm run build
+
+      - name: Save version
+        id: version
+        run: echo ::set-output name=tag::$(echo $(node -p -e "require('./package.json').version"))
+        
+      - name: Increase version
+        run: npm version patch
+        
+      - name: Push new version
+        run: git push
+      
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        
+      - name: Build Docker image
+        run: docker build . --file Dockerfile --tag ziermann/tut:${{steps.version.outputs.tag}}
+        
+      - name: Push to Docker Hub
+        run: docker push ziermann/tut:${{steps.version.outputs.tag}}
 
 
 # https://github.com/marketplace/actions/docker-build-push-action
