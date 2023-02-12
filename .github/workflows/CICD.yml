@@ -37,10 +37,7 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: setup git config
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
+  
 
       - name : Dependencies
         run: npm ci
@@ -48,24 +45,20 @@ jobs:
       - name : Build
         run: npm run build
 
-      - name: Save version
-        id: version
-        run: echo ::set-output name=tag::$(echo $(node -p -e "require('./package.json').version"))
+    
         
-      - name: Increase version
-        run: npm version patch
+     
         
-      - name: Push new version
-        run: git push
+  
       
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
         
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag ziermann/tut:${{steps.version.outputs.tag}}
+        run: docker build . --file Dockerfile --tag 0766537018/myapptest01:latest
         
       - name: Push to Docker Hub
-        run: docker push ziermann/tut:${{steps.version.outputs.tag}}
+        run: docker push 0766537018/myapptest01:latest
 
 
 # https://github.com/marketplace/actions/docker-build-push-action
