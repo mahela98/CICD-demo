@@ -27,6 +27,7 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       
+# https://github.com/marketplace/actions/docker-build-push-action
 
   Docker:
     runs-on: ubuntu-latest
@@ -37,20 +38,12 @@ jobs:
         with:
           node-version: 18.x
 
-  
-
       - name : Dependencies
         run: npm ci
 
       - name : Build
         run: npm run build
 
-    
-        
-     
-        
-  
-      
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
         
@@ -61,4 +54,3 @@ jobs:
         run: docker push 0766537018/myapptest01:latest
 
 
-# https://github.com/marketplace/actions/docker-build-push-action
