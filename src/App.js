@@ -13,7 +13,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React with me chandima
+          Learn React with me chandima Mahela
         </a>
       </header>
     </div>
